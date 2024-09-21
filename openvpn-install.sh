@@ -731,14 +731,14 @@ function installOpenVPN() {
 
 		# Create the PKI, set up the CA, the DH params and the server certificate
 		./easyrsa init-pki
-		EASYRSA_CA_EXPIRE=3650 ./easyrsa --batch --req-cn="$SERVER_CN" build-ca nopass
+		./easyrsa --batch --req-cn="$SERVER_CN" build-ca nopass
 
 		if [[ $DH_TYPE == "2" ]]; then
 			# ECDH keys are generated on-the-fly so we don't need to generate them beforehand
 			openssl dhparam -out dh.pem $DH_KEY_SIZE
 		fi
 
-		EASYRSA_CERT_EXPIRE=3650 ./easyrsa --batch build-server-full "$SERVER_NAME" nopass
+		./easyrsa --batch build-server-full "$SERVER_NAME" nopass
 		EASYRSA_CRL_DAYS=3650 ./easyrsa gen-crl
 
 		case $TLS_SIG in
@@ -1085,11 +1085,11 @@ function newClient() {
 		cd /etc/openvpn/easy-rsa/ || return
 		case $PASS in
 		1)
-			EASYRSA_CERT_EXPIRE=3650 ./easyrsa --batch build-client-full "$CLIENT" nopass
+			./easyrsa --batch build-client-full "$CLIENT" nopass
 			;;
 		2)
 			echo "⚠️ You will be asked for the client password below ⚠️"
-			EASYRSA_CERT_EXPIRE=3650 ./easyrsa --batch build-client-full "$CLIENT"
+			./easyrsa --batch build-client-full "$CLIENT"
 			;;
 		esac
 		echo "Client $CLIENT added."
